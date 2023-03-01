@@ -8,12 +8,7 @@ times 33 db 0
 
 start:
     jmp 0x7c0:step2
-handle_zero:
-    mov ah,0eh
-    mov al,'A'
-    mov bx, 0x00
-    int 0x10
-    iret
+
 step2:
    cli ;clear interrupts
    mov ax, 0x7c0
@@ -24,13 +19,24 @@ step2:
    mov sp, 0x7c00
    sti ;enable interrupts
 
-   mov word[ss:0x00], handle_zero
-   mov [ss:0x02], 0x7c0
+   mov ah,2 ;READ SECTOR COMAND
+   mov al,1 ;ONE SECTOR TO READ
+   mov ch,0 ;CYLINDER LOW EIGHT BIT
+   mov cl,2 ; READ SECTOR TWO
+   mov dh,0 ; Head Number
+   mov bx,buffer
+   int 0x13
+   jc error
 
-   int 0
+        mov si,buffer
+        call print
+        jmp $
 
-   mov si, message
-   call print
+
+
+error:
+    mov si,error_message
+    call print
     jmp $
 
 
@@ -50,6 +56,8 @@ print_char:
     int 0x10
     ret
 
-message: db 'Hello INSA!' , 0
+error_message: db 'Failed to load sector', 0
+
 times 510-($-$$) db 0
 dw 0xAA55
+buffer:
