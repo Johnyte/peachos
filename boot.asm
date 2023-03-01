@@ -38,6 +38,6 @@ print_char:
     int 0x10
     ret
 
-message: db 'Hello Yeabsira!' , 0
+message: db 'Hello INSA!' , 0
 times 510-($-$$) db 0
 dw 0xAA55
