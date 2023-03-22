@@ -1,5 +1,5 @@
 ORG 0x7c00
-BITS 16
+BITS 32
 
 CODE_SEG equ gdt_code - gdt_start
 DATA_SEG equ gdt_data - gdt_start
